@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Exam Paper Generator</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Default theme - Classic Blue */
+            --primary-color: #1a3e8c;
+            --secondary-color: #6c757d;
+            --border-color: #dee2e6;
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --paper-color: #ffffff;
+            --highlight-color: #e9ecef;
+            --error-color: #dc3545;
+            --success-color: #28a745;
+            --shadow: 0 0 10px rgba(0,0,0,0.05);
+            --font-stack: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-stack);
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            padding: 1rem;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 210mm;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 992px) {
+            .container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .input-panel {
+            background: var(--paper-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+            position: sticky;
+            top: 1rem;
+        }
+
+        .exam-paper {
+            background: var(--paper-color);
+            padding: 1.5cm;
+            box-shadow: var(--shadow);
+            min-height: 297mm;
+            font-family: var(--font-stack);
+            overflow-x: auto;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        h3 {
+            font-size: 1rem;
+            color: var(--primary-color);
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        .exam-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .exam-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .exam-subtitle {
+            font-style: italic;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .exam-meta {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            gap: 1rem;
+        }
+
+        .instructions {
+            border: 1px solid var(--border-color);
+            padding: 0.75rem;
+            margin-bottom: 1.5rem;
+            background-color: var(--highlight-color);
+            font-size: 0.9rem;
+            font-weight: 400;
+            border-radius: 4px;
+        }
+
+        .question {
+            margin-bottom: 1.5rem;
+            page-break-inside: avoid;
+        }
+
+        .question-text {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-parts {
+            margin-left: 1.5rem;
+        }
+
+        .part {
+            margin-bottom: 0.75rem;
+        }
+
+        .marks {
+            float: right;
+            font-weight: 600;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.25rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: monospace;
+            margin-bottom: 1rem;
+            resize: vertical;
+            background-color: var(--paper-color);
+            color: var(--text-color);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-stack);
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background-color: color-mix(in srgb, var(--primary-color), black 15%);
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .button-group {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .error {
+            color: var(--error-color);
+            margin-top: 0.5rem;
+            font-weight: 400;
+        }
+
+        .success {
+            color: var(--success-color);
+            margin-top: 0.5rem;
+            font-weight: 400;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+        .exam-image {
+            max-width: 100%;
+            height: auto;
+            margin: 0.5rem 0;
+            border: 1px solid var(--border-color);
+            display: block;
+            border-radius: 4px;
+        }
+
+        .exam-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .exam-table th, .exam-table td {
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
+            text-align: left;
+        }
+
+        .exam-table th {
+            background-color: var(--highlight-color);
+            font-weight: 600;
+        }
+
+        .answer-space {
+            height: 2rem;
+            margin: 0.5rem 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .long-answer-space {
+            height: 6rem;
+            margin: 1rem 0;
+            border: 1px solid var(--border-color);
+            background-image: repeating-linear-gradient(
+                to bottom,
+                var(--paper-color),
+                var(--paper-color) 1.5rem,
+                var(--highlight-color) 1.5rem,
+                var(--highlight-color) 2rem
+            );
+            border-radius: 4px;
+        }
+
+        .controls-panel {
+            background-color: var(--highlight-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .control-group {
+            margin-bottom: 1rem;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        select {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background-color: var(--paper-color);
+            color: var(--text-color);
+            font-family: var(--font-stack);
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .input-panel, .controls-panel {
+                display: none;
+            }
+            .exam-paper {
+                box-shadow: none;
+                padding: 1.5cm;
+                width: 100%;
+                height: auto;
+                margin: 0;
+            }
+            .container {
+                display: block;
+            }
+        }
+
+        /* Themes */
+        .theme-classic-blue {
+            --primary-color: #1a3e8c;
+            --secondary-color: #6c757d;
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --paper-color: #ffffff;
+            --highlight-color: #e9ecef;
+        }
+
+        .theme-modern-dark {
+            --primary-color: #4dabf7;
+            --secondary-color: #adb5bd;
+            --bg-color: #212529;
+            --text-color: #f8f9fa;
+            --paper-color: #343a40;
+            --highlight-color: #495057;
+        }
+
+        .theme-warm-parchment {
+            --primary-color: #8b4513;
+            --secondary-color: #6c757d;
+            --bg-color: #f5f5f0;
+            --text-color: #333333;
+            --paper-color: #fffaf0;
+            --highlight-color: #e6e0d6;
+        }
+
+        .theme-cool-professional {
+            --primary-color: #2c3e50;
+            --secondary-color: #7f8c8d;
+            --bg-color: #ecf0f1;
+            --text-color: #2c3e50;
+            --paper-color: #ffffff;
+            --highlight-color: #dfe6e9;
+        }
+
+        .theme-high-contrast {
+            --primary-color: #000000;
+            --secondary-color: #333333;
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --paper-color: #ffffff;
+            --highlight-color: #f0f0f0;
+        }
+
+        /* Font classes */
+        .font-inter { --font-stack: 'Inter', sans-serif; }
+        .font-roboto { --font-stack: 'Roboto', sans-serif; }
+        .font-open-sans { --font-stack: 'Open Sans', sans-serif; }
+        .font-source-sans { --font-stack: 'Source Sans Pro', sans-serif; }
+        .font-noto-sans { --font-stack: 'Noto Sans', sans-serif; }
+        .font-lato { --font-stack: 'Lato', sans-serif; }
+        .font-montserrat { --font-stack: 'Montserrat', sans-serif; }
+        .font-raleway { --font-stack: 'Raleway', sans-serif; }
+        .font-pt-sans { --font-stack: 'PT Sans', sans-serif; }
+        .font-merriweather { --font-stack: 'Merriweather', serif; }
+        .font-playfair { --font-stack: 'Playfair Display', serif; }
+        .font-roboto-slab { --font-stack: 'Roboto Slab', serif; }
+        .font-ubuntu { --font-stack: 'Ubuntu', sans-serif; }
+        .font-oswald { --font-stack: 'Oswald', sans-serif; }
+        .font-quicksand { --font-stack: 'Quicksand', sans-serif; }
+        .font-nunito { --font-stack: 'Nunito', sans-serif; }
+        .font-poppins { --font-stack: 'Poppins', sans-serif; }
+        .font-work-sans { --font-stack: 'Work Sans', sans-serif; }
+        .font-fira-sans { --font-stack: 'Fira Sans', sans-serif; }
+    </style>
+</head>
+<body class="theme-classic-blue font-inter">
+    <div class="container">
+        <div class="input-panel">
+            <h1>Advanced Exam Paper Generator</h1>
+            
+            <div class="controls-panel">
+                <div class="control-group">
+                    <label for="theme-select">Select Theme:</label>
+                    <select id="theme-select">
+                        <option value="classic-blue">Classic Blue</option>
+                        <option value="modern-dark">Modern Dark</option>
+                        <option value="warm-parchment">Warm Parchment</option>
+                        <option value="cool-professional">Cool Professional</option>
+                        <option value="high-contrast">High Contrast</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="font-select">Select Font:</label>
+                    <select id="font-select">
+                        <option value="inter">Inter</option>
+                        <option value="roboto">Roboto</option>
+                        <option value="open-sans">Open Sans</option>
+                        <option value="source-sans">Source Sans Pro</option>
+                        <option value="noto-sans">Noto Sans</option>
+                        <option value="lato">Lato</option>
+                        <option value="montserrat">Montserrat</option>
+                        <option value="raleway">Raleway</option>
+                        <option value="pt-sans">PT Sans</option>
+                        <option value="merriweather">Merriweather</option>
+                        <option value="playfair">Playfair Display</option>
+                        <option value="roboto-slab">Roboto Slab</option>
+                        <option value="ubuntu">Ubuntu</option>
+                        <option value="oswald">Oswald</option>
+                        <option value="quicksand">Quicksand</option>
+                        <option value="nunito">Nunito</option>
+                        <option value="poppins">Poppins</option>
+                        <option value="work-sans">Work Sans</option>
+                        <option value="fira-sans">Fira Sans</option>
+                    </select>
+                </div>
+            </div>
+            
+            <textarea id="json-input" placeholder='Paste your JSON exam structure here or click "Load Sample"...'></textarea>
+            
+            <div class="button-group">
+                <button id="generate-btn">Generate Exam</button>
+                <button id="sample-btn">Load Sample</button>
+                <button id="clear-btn">Clear</button>
+                <button id="print-btn">Print Exam</button>
+            </div>
+            
+            <div id="error-message" class="error"></div>
+            <div id="success-message" class="success"></div>
+        </div>
+        
+        <div class="exam-paper" id="exam-output">
+            <div class="exam-header">
+                <div class="exam-title">[Exam Title]</div>
+                <div class="exam-subtitle">[Subject]</div>
+                <div class="exam-meta">
+                    <span>Time allowed: [Duration]</span>
+                    <span>Maximum marks: [Total Marks]</span>
+                </div>
+            </div>
+            
+            <div class="instructions">
+                <strong>INSTRUCTIONS</strong>
+                <p>Answer all questions. Write your answers in the spaces provided.</p>
+            </div>
+            
+            <div id="exam-content">
+                <p style="text-align: center; color: var(--secondary-color);">
+                    Your exam paper will appear here after generating.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const jsonInput = document.getElementById('json-input');
+            const generateBtn = document.getElementById('generate-btn');
+            const sampleBtn = document.getElementById('sample-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const printBtn = document.getElementById('print-btn');
+            const examContent = document.getElementById('exam-content');
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            const themeSelect = document.getElementById('theme-select');
+            const fontSelect = document.getElementById('font-select');
+            const body = document.body;
+
+            // Theme and font switchers
+            themeSelect.addEventListener('change', function() {
+                body.className = body.className.replace(/\btheme-\S+/g, '');
+                body.classList.add(`theme-${this.value}`);
+            });
+
+            fontSelect.addEventListener('change', function() {
+                body.className = body.className.replace(/\bfont-\S+/g, '');
+                body.classList.add(`font-${this.value}`);
+            });
+
+            // Load sample exam JSON
+            sampleBtn.addEventListener('click', function() {
+                jsonInput.value = JSON.stringify({
+                    "exam": {
+                        "title": "GCSE Mathematics (Higher Tier)",
+                        "subject": "Paper 2: Calculator",
+                        "duration": "1 hour 30 minutes",
+                        "totalMarks": 80,
+                        "instructions": [
+                            "Answer all questions.",
+                            "Write your answers in the spaces provided.",
+                            "You must show all your working.",
+                            "Calculators may be used.",
+                            "Diagrams are NOT accurately drawn, unless otherwise indicated."
+                        ],
+                        "sections": [
+                            {
+                                "title": "Section A: Multiple Choice",
+                                "instructions": "For each question, choose the correct answer from the options given and write the corresponding letter in the box provided.",
+                                "questions": [
+                                    {
+                                        "text": "Which of these numbers is a factor of 30?",
+                                        "parts": [
+                                            {"text": "4", "marks": 0},
+                                            {"text": "5", "marks": 1},
+                                            {"text": "8", "marks": 0},
+                                            {"text": "12", "marks": 0}
+                                        ]
+                                    },
+                                    {
+                                        "text": "The equation of a straight line is y = 2x + 3. What is the gradient?",
+                                        "parts": [
+                                            {"text": "2", "marks": 1},
+                                            {"text": "3", "marks": 0},
+                                            {"text": "5", "marks": 0},
+                                            {"text": "x", "marks": 0}
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "title": "Section B: Short Answer",
+                                "instructions": "Answer all questions in the spaces provided. Show all your working.",
+                                "questions": [
+                                    {
+                                        "text": "Solve 3x + 7 = 22",
+                                        "marks": 2
+                                    },
+                                    {
+                                        "text": "Calculate 15% of £240",
+                                        "marks": 2
+                                    },
+                                    {
+                                        "text": "A triangle has angles of 35° and 65°. Calculate the size of the third angle.",
+                                        "marks": 2
+                                    }
+                                ]
+                            },
+                            {
+                                "title": "Section C: Problem Solving",
+                                "instructions": "Answer all questions, showing all your working and reasoning clearly.",
+                                "questions": [
+                                    {
+                                        "text": "The diagram shows a right-angled triangle ABC:",
+                                        "image": {
+                                            "src": "https://www.mathsisfun.com/geometry/images/triangle-abc.gif",
+                                            "alt": "Right-angled triangle ABC with AB = 5cm, BC = 12cm",
+                                            "width": "200"
+                                        },
+                                        "parts": [
+                                            {"text": "Calculate the length of AC", "marks": 3},
+                                            {"text": "Find the area of triangle ABC", "marks": 2}
+                                        ]
+                                    },
+                                    {
+                                        "text": "The table shows information about the ages of 30 people attending a concert:",
+                                        "table": {
+                                            "headers": ["Age (years)", "Frequency"],
+                                            "rows": [
+                                                ["0 < age ≤ 20", "5"],
+                                                ["20 < age ≤ 40", "12"],
+                                                ["40 < age ≤ 60", "8"],
+                                                ["60 < age ≤ 80", "5"]
+                                            ]
+                                        },
+                                        "parts": [
+                                            {"text": "Complete the cumulative frequency table", "marks": 2},
+                                            {"text": "Estimate the median age", "marks": 2}
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "title": "Section D: Extended Response",
+                                "instructions": "Answer the question, showing all stages of your working and giving reasons for your answers.",
+                                "questions": [
+                                    {
+                                        "text": "A shop sells two types of coffee:",
+                                        "parts": [
+                                            {"text": "Type A costs £5.40 per 250g", "marks": 0},
+                                            {"text": "Type B costs £8.10 per 400g", "marks": 0},
+                                            {"text": "Which coffee gives better value for money? You must show all your working.", "marks": 4},
+                                            {"text": "How much would 1.5kg of the better value coffee cost?", "marks": 2}
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "footer": {
+                            "endOfExam": "END OF EXAM",
+                            "advice": "Check your work if you have time."
+                        }
+                    }
+                }, null, 2);
+                
+                successMessage.textContent = "Sample exam loaded successfully!";
+                setTimeout(() => successMessage.textContent = "", 3000);
+            });
+
+            // Clear the input and output
+            clearBtn.addEventListener('click', function() {
+                jsonInput.value = '';
+                examContent.innerHTML = '<p style="text-align: center; color: var(--secondary-color);">Your exam paper will appear here after generating.</p>';
+                errorMessage.textContent = '';
+                successMessage.textContent = "Input cleared successfully!";
+                setTimeout(() => successMessage.textContent = "", 3000);
+            });
+
+            // Print the exam
+            printBtn.addEventListener('click', function() {
+                window.print();
+            });
+
+            // Generate the exam from JSON
+            generateBtn.addEventListener('click', function() {
+                try {
+                    const examData = JSON.parse(jsonInput.value);
+                    renderExam(examData);
+                    errorMessage.textContent = '';
+                    successMessage.textContent = "Exam generated successfully!";
+                    setTimeout(() => successMessage.textContent = "", 3000);
+                } catch (e) {
+                    errorMessage.textContent = 'Error: ' + e.message;
+                }
+            });
+
+            // Render the exam paper
+            function renderExam(data) {
+                if (!data.exam) {
+                    throw new Error("Invalid exam format: missing 'exam' property");
+                }
+
+                const exam = data.exam;
+                let html = '';
+
+                // Update header
+                document.querySelector('.exam-title').textContent = exam.title || '[Exam Title]';
+                document.querySelector('.exam-subtitle').textContent = exam.subject || '[Subject]';
+                
+                const metaElements = document.querySelectorAll('.exam-meta span');
+                if (metaElements.length >= 2) {
+                    metaElements[0].textContent = `Time allowed: ${exam.duration || '[Duration]'}`;
+                    metaElements[1].textContent = `Maximum marks: ${exam.totalMarks || '[Total Marks]'}`;
+                }
+
+                // Update instructions
+                let instructionsHtml = '<strong>INSTRUCTIONS</strong>';
+                if (exam.instructions && Array.isArray(exam.instructions)) {
+                    exam.instructions.forEach(instruction => {
+                        instructionsHtml += `<p>• ${instruction}</p>`;
+                    });
+                } else {
+                    instructionsHtml += '<p>• Answer all questions. Write your answers in the spaces provided.</p>';
+                }
+                document.querySelector('.instructions').innerHTML = instructionsHtml;
+
+                // Render sections
+                if (exam.sections && Array.isArray(exam.sections)) {
+                    exam.sections.forEach((section, sectionIndex) => {
+                        html += `<div class="section" id="section-${sectionIndex}">`;
+                        html += `<h2 class="section-title">${section.title || `Section ${sectionIndex + 1}`}</h2>`;
+                        
+                        if (section.instructions) {
+                            html += `<p><em>${section.instructions}</em></p>`;
+                        }
+
+                        if (section.questions && Array.isArray(section.questions)) {
+                            section.questions.forEach((question, questionIndex) => {
+                                html += renderQuestion(question, questionIndex + 1);
+                            });
+                        }
+
+                        html += `</div>`;
+                        
+                        // Add page break after each section except the last one
+                        if (sectionIndex < exam.sections.length - 1) {
+                            html += `<div class="page-break"></div>`;
+                        }
+                    });
+                }
+
+                // Add footer if exists
+                if (exam.footer) {
+                    html += `<div style="text-align: center; margin-top: 2rem; font-weight: 500;">`;
+                    if (exam.footer.endOfExam) {
+                        html += `<p><strong>${exam.footer.endOfExam}</strong></p>`;
+                    }
+                    if (exam.footer.advice) {
+                        html += `<p>${exam.footer.advice}</p>`;
+                    }
+                    html += `</div>`;
+                }
+
+                examContent.innerHTML = html;
+            }
+
+            // Render a single question
+            function renderQuestion(question, number) {
+                let html = `<div class="question" id="question-${number}">`;
+                
+                // Question text
+                html += `<div class="question-text">${number}. ${question.text || '[Question text]'}`;
+                if (question.marks && !question.parts) {
+                    html += `<span class="marks">[${question.marks}]</span>`;
+                }
+                html += `</div>`;
+                
+                // Question image if exists
+                if (question.image) {
+                    html += `<img class="exam-image" src="${question.image.src}" alt="${question.image.alt || ''}" ${question.image.width ? 'width="' + question.image.width + '"' : ''}>`;
+                }
+                
+                // Question table if exists
+                if (question.table) {
+                    html += `<table class="exam-table">`;
+                    if (question.table.headers) {
+                        html += `<thead><tr>`;
+                        question.table.headers.forEach(header => {
+                            html += `<th>${header}</th>`;
+                        });
+                        html += `</tr></thead>`;
+                    }
+                    if (question.table.rows) {
+                        html += `<tbody>`;
+                        question.table.rows.forEach(row => {
+                            html += `<tr>`;
+                            row.forEach(cell => {
+                                html += `<td>${cell}</td>`;
+                            });
+                            html += `</tr>`;
+                        });
+                        html += `</tbody>`;
+                    }
+                    html += `</table>`;
+                }
+                
+                // Question parts
+                if (question.parts && Array.isArray(question.parts)) {
+                    html += `<div class="question-parts">`;
+                    question.parts.forEach((part, partIndex) => {
+                        html += `<div class="part">`;
+                        html += `(${String.fromCharCode(97 + partIndex)}) ${part.text || '[Part text]'}`;
+                        if (part.marks) {
+                            html += `<span class="marks">[${part.marks}]</span>`;
+                        }
+                        html += `</div>`;
+                    });
+                    html += `</div>`;
+                }
+                
+                // Space for answer
+                if (question.marks) {
+                    const isLongAnswer = question.marks >= 4 || (question.parts && question.parts.some(p => p.marks >= 3));
+                    html += isLongAnswer 
+                        ? `<div class="long-answer-space"></div>`
+                        : `<div class="answer-space"></div>`;
+                }
+                
+                html += `</div>`;
+                return html;
+            }
+        });
+    </script>
+</body>
+</html>
